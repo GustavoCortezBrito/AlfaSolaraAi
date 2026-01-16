@@ -186,12 +186,4 @@ IMPORTANTE:
       { status: errorType === 'rate_limit' ? 429 : 500 }
     );
   }
-    return NextResponse.json(
-      { 
-        error: 'Erro ao processar cálculo. Verifique os dados e tente novamente.',
-        details: error instanceof Error ? error.message : 'Erro desconhecido'
-      },
-      { status: 500 }
-    );
-  }
 }

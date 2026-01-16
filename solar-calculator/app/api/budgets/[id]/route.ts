@@ -4,9 +4,10 @@ import { createClient } from '@/lib/supabase/server';
 // GET - Buscar orçamento específico
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
     
     const {
@@ -20,7 +21,7 @@ export async function GET(
     const { data: budget, error } = await supabase
       .from('budgets')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .eq('user_id', user.id)
       .single();
 
@@ -43,9 +44,10 @@ export async function GET(
 // PATCH - Atualizar orçamento
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
     
     const {
@@ -61,7 +63,7 @@ export async function PATCH(
     const { data: budget, error } = await supabase
       .from('budgets')
       .update(body)
-      .eq('id', params.id)
+      .eq('id', id)
       .eq('user_id', user.id)
       .select()
       .single();
@@ -81,9 +83,10 @@ export async function PATCH(
 // DELETE - Deletar orçamento
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
     
     const {
@@ -97,7 +100,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('budgets')
       .delete()
-      .eq('id', params.id)
+      .eq('id', id)
       .eq('user_id', user.id);
 
     if (error) throw error;
