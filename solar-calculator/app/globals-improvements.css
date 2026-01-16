@@ -1,0 +1,37 @@
+/* Melhorias globais de UX */
+
+/* Cursor pointer em todos os elementos interativos */
+button,
+a,
+[role="button"],
+[type="button"],
+[type="submit"],
+[type="reset"],
+select,
+input[type="checkbox"],
+input[type="radio"],
+label[for],
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+/* Desabilitar cursor pointer em elementos desabilitados */
+button:disabled,
+[disabled] {
+  cursor: not-allowed !important;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Melhorar tap targets no mobile */
+@media (max-width: 768px) {
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

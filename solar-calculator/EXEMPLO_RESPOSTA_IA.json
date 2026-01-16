@@ -1,0 +1,56 @@
+{
+  "exemplo_request": {
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "cep": "01310-100",
+    "consumoMedioMensal": 350,
+    "pretendAumentar": true,
+    "equipamentosAdicionais": [
+      {
+        "nome": "Ar Condicionado",
+        "potenciaWatts": 1500,
+        "quantidade": 2,
+        "horasUsoDia": 8
+      },
+      {
+        "nome": "Chuveiro Elétrico",
+        "potenciaWatts": 5500,
+        "quantidade": 1,
+        "horasUsoDia": 1
+      }
+    ]
+  },
+  "exemplo_response": {
+    "potencia_kwp": 8.5,
+    "quantidade_placas": 16,
+    "placa_watts": 550,
+    "inversor": "Inversor 8kW On-Grid Monofásico",
+    "custo_estimado": 36550,
+    "payback_anos": 4.2,
+    "explicacao": "Com base na localização em São Paulo/SP, a irradiação solar média é de 4.6 kWh/m²/dia. O consumo total mensal estimado é de 635 kWh, considerando o consumo atual de 350 kWh mais 285 kWh dos equipamentos adicionais (2 ar-condicionados e 1 chuveiro elétrico).\n\nPara atender essa demanda, recomendamos um sistema de 8.5 kWp composto por 16 placas solares de 550W cada. Este dimensionamento considera perdas de aproximadamente 20% (cabeamento, inversor, sujeira, temperatura) e garante geração suficiente durante todo o ano.\n\nO inversor de 8kW on-grid monofásico é adequado para a potência instalada e permite conexão com a rede elétrica, possibilitando o sistema de compensação de energia.\n\nInvestimento estimado: R$ 36.550,00 (considerando R$ 4.300/kWp instalado, incluindo equipamentos, instalação e projeto). Com economia mensal média de R$ 540,00 na conta de luz (tarifa de R$ 0,85/kWh), o retorno do investimento ocorre em aproximadamente 4,2 anos.\n\nApós o payback, o sistema continuará gerando economia por mais de 20 anos, com vida útil das placas de 25-30 anos.",
+    "consumo_total_kwh": 635,
+    "irradiacao_media": 4.6
+  },
+  "notas": {
+    "descricao": "Este é um exemplo de resposta que a IA Gemini deve retornar",
+    "formato": "JSON válido sem markdown",
+    "campos_obrigatorios": [
+      "potencia_kwp",
+      "quantidade_placas",
+      "placa_watts",
+      "inversor",
+      "custo_estimado",
+      "payback_anos",
+      "explicacao",
+      "consumo_total_kwh",
+      "irradiacao_media"
+    ],
+    "consideracoes": [
+      "A IA deve estimar a irradiação solar baseada na localização",
+      "Cálculos devem considerar perdas do sistema (20-25%)",
+      "Preços devem refletir o mercado brasileiro em 2026",
+      "Explicação deve ser clara e profissional",
+      "Payback calculado com base na tarifa média de R$ 0,85/kWh"
+    ]
+  }
+}
