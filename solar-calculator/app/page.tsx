@@ -1,18 +1,26 @@
-import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
+import CalculadoraClient from '@/components/CalculadoraClient';
 
-export default async function Home() {
-  const supabase = await createClient();
+export default function HomePage() {
+  // Acesso direto à calculadora sem autenticação
+  const mockUser = {
+    id: 'public-user',
+    email: 'publico@alfasolar.com',
+    role: 'public'
+  };
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const mockProfile = {
+    id: 'public-user',
+    email: 'publico@alfasolar.com',
+    name: 'Usuário Público',
+    role: 'public',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
 
-  // Se não estiver logado, redireciona para login
-  if (!user) {
-    redirect('/login');
-  }
-
-  // Se estiver logado, redireciona para dashboard
-  redirect('/dashboard');
+  return (
+    <CalculadoraClient 
+      user={mockUser} 
+      profile={mockProfile} 
+    />
+  );
 }

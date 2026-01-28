@@ -56,47 +56,73 @@ export async function POST(request: NextRequest) {
 
     const consumoTotal = formData.consumoMedioMensal + consumoAdicional;
 
-    // Prompt otimizado com melhorias técnicas (Lei 14.300, HSP diário, produção mensal)
-    const prompt = `Você é um engenheiro elétrico especialista em sistemas fotovoltaicos. Dimensione um sistema solar ON-GRID.
+    // Prompt otimizado com melhorias técnicas avançadas para Alfa Solar
+    const prompt = `Você é um ENGENHEIRO ELÉTRICO ESPECIALISTA em sistemas fotovoltaicos da ALFA SOLAR (Presidente Prudente/SP). 
+Dimensione um sistema solar ON-GRID seguindo as melhores práticas de engenharia e padrões da empresa.
 
-DADOS:
-Localização: ${formData.cidade}, ${formData.estado}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📍 DADOS DO PROJETO - ALFA SOLAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Cliente: Localização ${formData.cidade}, ${formData.estado}
 Consumo atual: ${formData.consumoMedioMensal} kWh/mês
 Consumo adicional planejado: ${consumoAdicional.toFixed(2)} kWh/mês${equipamentosDetalhados}
-CONSUMO TOTAL: ${consumoTotal.toFixed(2)} kWh/mês
+CONSUMO TOTAL A ATENDER: ${consumoTotal.toFixed(2)} kWh/mês
 
-TAREFA:
-1. Determine HSP médio diário (kWh/m²/dia) da região usando Atlas Solarimétrico Brasil/CRESESB
-2. Calcule potência: P(kWp) = (Consumo_mensal / 30) / (HSP × 0.80)
-3. Calcule produção mensal estimada: P(kWp) × HSP × 30 × 0.80
-4. Dimensione com módulos de 550W, 600W ou 660W (tecnologia 2026)
-5. Especifique inversor adequado (marca, potência, tipo)
-6. Calcule investimento: R$ 3.800-4.200/kWp instalado
-7. Calcule payback considerando:
-   - Tarifa R$ 0,85/kWh
-   - Consumo mínimo da concessionária (~30-50 kWh)
-   - Regras atuais de compensação (Lei 14.300/2022)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔧 METODOLOGIA DE DIMENSIONAMENTO ALFA SOLAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ETAPA 1: HSP médio diário para ${formData.cidade}/${formData.estado} (Atlas Solarimétrico INPE/CRESESB)
+ETAPA 2: Energia diária necessária: E_diária = ${consumoTotal.toFixed(2)} / 30 = ${(consumoTotal/30).toFixed(2)} kWh/dia
+ETAPA 3: Potência mínima: P(kWp) = E_diária / (HSP × η_sistema)
+         η_sistema = 0.80 (perdas: cabeamento 3%, inversor 5%, sujeira 5%, temperatura 7%)
+ETAPA 4: Seleção de módulos TIER 1 (Canadian Solar, Jinko, Trina - 550W/600W/660W monocristalino)
+ETAPA 5: Inversor dimensionado: P_inv = 0.85 a 1.0 × P_gerador (Growatt, Fronius, SMA)
+ETAPA 6: Investimento Alfa Solar: R$ 3.800-4.200/kWp (projeto + instalação + homologação + garantia)
+ETAPA 7: Análise econômica regional:
+         - Tarifa CPFL/Energisa: R$ 0,85-0,95/kWh (com bandeiras)
+         - Taxa mínima: 30-50 kWh/mês (custo de disponibilidade)
+         - Lei 14.300/2022: compensação integral até 2045
+         - Garantia Alfa Solar: 5 anos instalação + 25 anos módulos + 10 anos inversor
 
-RESPONDA APENAS COM JSON (sem markdown):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 RESPOSTA TÉCNICA OBRIGATÓRIA (JSON sem markdown)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 {
-  "potencia_kwp": [número 2 decimais],
-  "quantidade_placas": [inteiro],
-  "placa_watts": [550, 600 ou 660],
-  "inversor": "[Marca] [Potência]kW [Tipo]",
-  "custo_estimado": [inteiro],
-  "payback_anos": [número 1 decimal],
-  "explicacao": "[Texto técnico incluindo: 1) HSP médio diário da região (não multiplicar por 30 ao citar), 2) Cálculo da potência, 3) Produção mensal estimada (kWh/mês), 4) Escolha dos módulos, 5) Dimensionamento do inversor, 6) Análise econômica com disclaimer sobre Lei 14.300/2022, 7) Menção ao consumo mínimo da concessionária e que o sistema reduz a conta a valores mínimos]",
+  "potencia_kwp": [número 2 decimais - potência mínima calculada],
+  "quantidade_placas": [inteiro - quantidade real de módulos],
+  "placa_watts": [550, 600 ou 660 - potência unitária do módulo],
+  "inversor": "[Marca] [Potência]kW [Tipo - String/Micro]",
+  "custo_estimado": [inteiro - valor total do investimento],
+  "payback_anos": [número 1 decimal - retorno simples],
+  "economia_mensal": [inteiro - R$ economia mensal na conta],
+  "economia_25_anos": [inteiro - R$ economia total em 25 anos],
+  "co2_evitado_ano": [número 1 decimal - toneladas CO2 evitadas por ano],
+  "area_necessaria": [número 1 decimal - área em m² para instalação],
+  "explicacao": "[ANÁLISE TÉCNICA COMPLETA da Alfa Solar incluindo: 1) HSP específico da região ${formData.cidade}/${formData.estado}, 2) Metodologia de cálculo detalhada, 3) Justificativa técnica dos módulos selecionados, 4) Dimensionamento e especificação do inversor, 5) Análise econômica com tarifas regionais, 6) Benefícios ambientais calculados, 7) Garantias oferecidas pela Alfa Solar, 8) Considerações sobre Lei 14.300/2022 e sistema de compensação]",
   "consumo_total_kwh": ${consumoTotal.toFixed(2)},
-  "irradiacao_media": [HSP em kWh/m²/dia],
-  "producao_mensal_estimada": [número inteiro - kWh/mês]
+  "irradiacao_media": [HSP em kWh/m²/dia - valor diário médio anual],
+  "producao_mensal_estimada": [inteiro - kWh produzidos por mês],
+  "producao_anual_estimada": [inteiro - kWh produzidos por ano]
 }
 
-IMPORTANTE:
-- HSP é valor DIÁRIO (kWh/m²/dia) - não multiplicar por 30 ao citar
-- Incluir produção mensal estimada no JSON e na explicação
-- Mencionar Lei 14.300/2022 no payback
-- Citar consumo mínimo da concessionária (30-50 kWh)
-- Explicar que sistema reduz conta a valores mínimos`;
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏆 DIRETRIZES ESPECÍFICAS ALFA SOLAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Use dados precisos do Atlas Solarimétrico para ${formData.cidade}/${formData.estado}
+✅ Considere perdas reais: cabeamento (3%) + inversor (5%) + sujeira (5%) + temperatura (7%) = 20%
+✅ Priorize módulos TIER 1 com eficiência >21% (Canadian Solar, Jinko, Trina)
+✅ Especifique inversores com garantia mínima 10 anos (Growatt, Fronius, SMA)
+✅ Calcule CO2 evitado: 0.0817 tCO2/MWh (fator de emissão SIN)
+✅ Área necessária: 6-8 m²/kWp (considerando espaçamento e orientação)
+✅ Mencione garantia total Alfa Solar: 5 anos instalação + garantias fabricantes
+✅ Explique benefícios Lei 14.300/2022: compensação integral até 2045
+✅ Considere superdimensionamento de 5-10% para compensar variações sazonais
+✅ Use tarifa média regional R$ 0,85-0,95/kWh (incluindo bandeiras tarifárias)
+✅ Inclua análise de payback considerando inflação energética de 4-6% ao ano
+✅ Destaque que Alfa Solar atende toda região de Presidente Prudente/SP
+
+IMPORTANTE: O sistema deve ser dimensionado para produzir ligeiramente ACIMA do consumo 
+para garantir compensação integral mesmo em meses menos ensolarados.`;
 
     console.log('🤖 [API] Enviando prompt para Groq (Llama 3)...');
     console.log(`📊 [API] Tamanho do prompt: ~${prompt.length} caracteres`);

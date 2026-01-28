@@ -12,12 +12,31 @@ interface Step3Props {
 }
 
 const equipamentosComuns = [
-  { nome: 'Ar Condicionado', potenciaWatts: 1500 },
-  { nome: 'Chuveiro Elétrico', potenciaWatts: 5500 },
-  { nome: 'Piscina (Bomba)', potenciaWatts: 1000 },
-  { nome: 'Veículo Elétrico', potenciaWatts: 7000 },
-  { nome: 'Aquecedor Elétrico', potenciaWatts: 3000 },
-  { nome: 'Outro', potenciaWatts: 0 },
+  { nome: 'Ar Condicionado Split 9.000 BTU', potenciaWatts: 900 },
+  { nome: 'Ar Condicionado Split 12.000 BTU', potenciaWatts: 1200 },
+  { nome: 'Ar Condicionado Split 18.000 BTU', potenciaWatts: 1800 },
+  { nome: 'Ar Condicionado Split 24.000 BTU', potenciaWatts: 2400 },
+  { nome: 'Chuveiro Elétrico 5500W', potenciaWatts: 5500 },
+  { nome: 'Chuveiro Elétrico 7500W', potenciaWatts: 7500 },
+  { nome: 'Aquecedor Elétrico 3000W', potenciaWatts: 3000 },
+  { nome: 'Aquecedor Elétrico 4000W', potenciaWatts: 4000 },
+  { nome: 'Piscina - Bomba 1/2 CV', potenciaWatts: 370 },
+  { nome: 'Piscina - Bomba 3/4 CV', potenciaWatts: 550 },
+  { nome: 'Piscina - Bomba 1 CV', potenciaWatts: 750 },
+  { nome: 'Veículo Elétrico - Carregamento Lento', potenciaWatts: 3300 },
+  { nome: 'Veículo Elétrico - Carregamento Rápido', potenciaWatts: 7400 },
+  { nome: 'Forno Elétrico Industrial', potenciaWatts: 4000 },
+  { nome: 'Máquina de Lavar Roupa', potenciaWatts: 500 },
+  { nome: 'Secadora de Roupas', potenciaWatts: 2500 },
+  { nome: 'Micro-ondas', potenciaWatts: 1200 },
+  { nome: 'Geladeira Duplex', potenciaWatts: 150 },
+  { nome: 'Freezer Horizontal', potenciaWatts: 200 },
+  { nome: 'Sauna Elétrica', potenciaWatts: 6000 },
+  { nome: 'Jacuzzi/Hidromassagem', potenciaWatts: 2200 },
+  { nome: 'Iluminação LED Adicional', potenciaWatts: 100 },
+  { nome: 'Computador/Workstation', potenciaWatts: 400 },
+  { nome: 'Ar Condicionado Central', potenciaWatts: 5000 },
+  { nome: 'Outro (Personalizado)', potenciaWatts: 0 },
 ];
 
 export default function Step3Expansion({ data, onChange }: Step3Props) {

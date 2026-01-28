@@ -30,7 +30,12 @@ export interface CalculationResult {
   explicacao: string;
   consumo_total_kwh: number;
   irradiacao_media: number;
-  producao_mensal_estimada?: number; // Novo campo opcional
+  producao_mensal_estimada?: number;
+  producao_anual_estimada?: number;
+  economia_mensal?: number;
+  economia_25_anos?: number;
+  co2_evitado_ano?: number;
+  area_necessaria?: number;
 }
 
 export interface PDFData extends FormData {

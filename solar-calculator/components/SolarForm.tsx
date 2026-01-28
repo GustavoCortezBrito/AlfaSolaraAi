@@ -169,37 +169,102 @@ export default function SolarForm() {
         </h2>
 
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-gradient-to-br from-blue-900/50 to-blue-800/30 border border-blue-700/50 p-4 rounded-lg">
               <p className="text-sm text-blue-300">Potência do Sistema</p>
               <p className="text-2xl font-bold text-blue-400">{result.potencia_kwp.toFixed(2)} kWp</p>
+              <p className="text-xs text-blue-300">{result.quantidade_placas}x {result.placa_watts}W</p>
             </div>
-            <div className="bg-gradient-to-br from-blue-900/50 to-blue-800/30 border border-blue-700/50 p-4 rounded-lg">
-              <p className="text-sm text-blue-300">Placas Solares</p>
-              <p className="text-2xl font-bold text-blue-400">
-                {result.quantidade_placas}x {result.placa_watts}W
+            
+            <div className="bg-gradient-to-br from-cyan-900/50 to-cyan-800/30 border border-cyan-700/50 p-4 rounded-lg">
+              <p className="text-sm text-cyan-300">Produção Mensal</p>
+              <p className="text-2xl font-bold text-cyan-400">
+                {result.producao_mensal_estimada ? `${result.producao_mensal_estimada} kWh` : 'Calculando...'}
               </p>
+              <p className="text-xs text-cyan-300">HSP: {result.irradiacao_media} kWh/m²/dia</p>
             </div>
+            
             <div className="bg-gradient-to-br from-purple-900/50 to-purple-800/30 border border-purple-700/50 p-4 rounded-lg">
               <p className="text-sm text-purple-300">Investimento</p>
               <p className="text-2xl font-bold text-purple-400">
                 R$ {result.custo_estimado.toLocaleString('pt-BR')}
               </p>
+              <p className="text-xs text-purple-300">R$ {Math.round(result.custo_estimado / result.potencia_kwp).toLocaleString()}/kWp</p>
             </div>
+            
             <div className="bg-gradient-to-br from-orange-900/50 to-orange-800/30 border border-orange-700/50 p-4 rounded-lg">
               <p className="text-sm text-orange-300">Payback</p>
               <p className="text-2xl font-bold text-orange-400">{result.payback_anos.toFixed(1)} anos</p>
+              <p className="text-xs text-orange-300">Retorno do investimento</p>
+            </div>
+          </div>
+
+          {/* Cards adicionais com novas informações */}
+          {(result.economia_mensal || result.economia_25_anos || result.co2_evitado_ano || result.area_necessaria) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {result.economia_mensal && (
+                <div className="bg-gradient-to-br from-green-900/50 to-green-800/30 border border-green-700/50 p-4 rounded-lg">
+                  <p className="text-sm text-green-300">Economia Mensal</p>
+                  <p className="text-2xl font-bold text-green-400">R$ {result.economia_mensal.toLocaleString()}</p>
+                  <p className="text-xs text-green-300">Na conta de luz</p>
+                </div>
+              )}
+
+              {result.economia_25_anos && (
+                <div className="bg-gradient-to-br from-emerald-900/50 to-emerald-800/30 border border-emerald-700/50 p-4 rounded-lg">
+                  <p className="text-sm text-emerald-300">Economia 25 Anos</p>
+                  <p className="text-2xl font-bold text-emerald-400">R$ {Math.round(result.economia_25_anos / 1000)}k</p>
+                  <p className="text-xs text-emerald-300">Economia total</p>
+                </div>
+              )}
+
+              {result.co2_evitado_ano && (
+                <div className="bg-gradient-to-br from-teal-900/50 to-teal-800/30 border border-teal-700/50 p-4 rounded-lg">
+                  <p className="text-sm text-teal-300">CO₂ Evitado/Ano</p>
+                  <p className="text-2xl font-bold text-teal-400">{result.co2_evitado_ano}t</p>
+                  <p className="text-xs text-teal-300">Benefício ambiental</p>
+                </div>
+              )}
+
+              {result.area_necessaria && (
+                <div className="bg-gradient-to-br from-indigo-900/50 to-indigo-800/30 border border-indigo-700/50 p-4 rounded-lg">
+                  <p className="text-sm text-indigo-300">Área Necessária</p>
+                  <p className="text-2xl font-bold text-indigo-400">{result.area_necessaria} m²</p>
+                  <p className="text-xs text-indigo-300">Para instalação</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="bg-gray-900 border border-gray-700 p-6 rounded-lg">
+            <h3 className="font-semibold text-blue-400 mb-3 flex items-center gap-2">
+              <span>🔧</span>
+              Especificações Técnicas
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <div className="text-gray-400 text-sm">Inversor</div>
+                <div className="text-white font-medium">{result.inversor}</div>
+              </div>
+              <div>
+                <div className="text-gray-400 text-sm">Consumo Total</div>
+                <div className="text-white font-medium">{result.consumo_total_kwh} kWh/mês</div>
+              </div>
+              {result.producao_anual_estimada && (
+                <div>
+                  <div className="text-gray-400 text-sm">Produção Anual</div>
+                  <div className="text-white font-medium">{result.producao_anual_estimada.toLocaleString()} kWh</div>
+                </div>
+              )}
             </div>
           </div>
 
           <div className="bg-gray-900 border border-gray-700 p-6 rounded-lg">
-            <h3 className="font-semibold text-blue-400 mb-2">Inversor</h3>
-            <p className="text-gray-300">{result.inversor}</p>
-          </div>
-
-          <div className="bg-gray-900 border border-gray-700 p-6 rounded-lg">
-            <h3 className="font-semibold text-blue-400 mb-3">Análise Técnica</h3>
-            <p className="text-gray-300 whitespace-pre-line">{result.explicacao}</p>
+            <h3 className="font-semibold text-blue-400 mb-3 flex items-center gap-2">
+              <span>📊</span>
+              Análise Técnica Detalhada
+            </h3>
+            <p className="text-gray-300 whitespace-pre-line leading-relaxed">{result.explicacao}</p>
           </div>
 
           {error && (

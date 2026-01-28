@@ -100,7 +100,18 @@ export default function PerfilClient({ user, profile: initialProfile }: PerfilCl
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    // Verificar se é usuário de desenvolvimento
+    const devUser = localStorage.getItem('alfa_solar_dev_user');
+    
+    if (devUser) {
+      // Logout do usuário de desenvolvimento
+      localStorage.removeItem('alfa_solar_dev_user');
+      document.cookie = 'alfa_solar_dev_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    } else {
+      // Logout do Supabase
+      await supabase.auth.signOut();
+    }
+    
     router.push('/login');
     router.refresh();
   };

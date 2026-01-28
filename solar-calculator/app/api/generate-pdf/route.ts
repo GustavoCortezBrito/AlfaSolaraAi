@@ -17,173 +17,254 @@ export async function POST(request: NextRequest) {
 
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 15;
+    const margin = 20;
     let yPos = margin;
 
-    // Cores Alfa (azul/cyan/prata)
+    // Cores Alfa Solar (amarelo/âmbar/dourado)
     const colors = {
-      primary: [59, 130, 246] as [number, number, number],      // Azul #3b82f6
-      secondary: [34, 211, 238] as [number, number, number],    // Cyan #22d3ee
-      accent: [156, 163, 175] as [number, number, number],      // Cinza #9ca3af
-      dark: [15, 23, 42] as [number, number, number],           // Slate-900
-      light: [241, 245, 249] as [number, number, number],       // Slate-100
+      primary: [245, 158, 11] as [number, number, number],        // Amber-500 #f59e0b
+      secondary: [252, 211, 77] as [number, number, number],      // Amber-300 #fcd34d
+      accent: [251, 191, 36] as [number, number, number],         // Amber-400 #fbbf24
+      dark: [15, 23, 42] as [number, number, number],             // Slate-900
+      light: [255, 251, 235] as [number, number, number],         // Amber-50 #fffbeb
       white: [255, 255, 255] as [number, number, number],
-      success: [34, 197, 94] as [number, number, number],       // Verde
-      warning: [251, 146, 60] as [number, number, number]       // Laranja
+      success: [34, 197, 94] as [number, number, number],         // Green-500
+      text: [71, 85, 105] as [number, number, number],            // Slate-600
+      textLight: [148, 163, 184] as [number, number, number]      // Slate-400
     };
 
-    // ==================== CABEÇALHO ====================
+    // ==================== CABEÇALHO ALFA SOLAR ====================
     
-    // Fundo azul no topo
+    // Fundo amarelo no topo
     doc.setFillColor(...colors.primary);
-    doc.rect(0, 0, pageWidth, 45, 'F');
+    doc.rect(0, 0, pageWidth, 40, 'F');
 
-    // Logo Alfa (texto estilizado)
+    // Logo Alfa Solar
     doc.setTextColor(...colors.white);
-    doc.setFontSize(32);
+    doc.setFontSize(28);
     doc.setFont('helvetica', 'bold');
-    doc.text('ALFA', margin, 20);
+    doc.text('ALFA SOLAR', margin, 18);
     
-    doc.setFontSize(14);
-    doc.setTextColor(...colors.secondary);
-    doc.text('SOLAR', margin, 28);
-
-    // Linha decorativa
-    doc.setDrawColor(...colors.secondary);
-    doc.setLineWidth(2);
-    doc.line(margin, 32, margin + 30, 32);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Energia Solar Fotovoltaica', margin, 26);
+    doc.text('Presidente Prudente/SP', margin, 32);
 
     // Título do documento
     doc.setTextColor(...colors.white);
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text('PROPOSTA COMERCIAL', pageWidth - margin, 20, { align: 'right' });
+    doc.text('PROPOSTA COMERCIAL', pageWidth - margin, 16, { align: 'right' });
     
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.text('Sistema Fotovoltaico', pageWidth - margin, 27, { align: 'right' });
-    doc.text(`Data: ${data.dataGeracao}`, pageWidth - margin, 32, { align: 'right' });
+    doc.text(`Orçamento Nº: WEB-${Date.now().toString().slice(-8)}`, pageWidth - margin, 24, { align: 'right' });
+    doc.text(`Data: ${data.dataGeracao}`, pageWidth - margin, 30, { align: 'right' });
 
-    yPos = 55;
+    yPos = 50;
 
-    // ==================== DADOS DO CLIENTE ====================
+    // ==================== EQUIPAMENTOS UTILIZADOS ====================
     
-    doc.setFillColor(...colors.light);
-    doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 25, 3, 3, 'F');
-
     doc.setTextColor(...colors.dark);
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.text('DADOS DO CLIENTE', margin + 5, yPos + 7);
-
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Localização: ${data.cidade}, ${data.estado}`, margin + 5, yPos + 14);
-    doc.text(`CEP: ${data.cep}`, margin + 5, yPos + 20);
-    doc.text(`Consumo Atual: ${data.consumoMedioMensal} kWh/mês`, pageWidth / 2, yPos + 14);
-    
-    if (data.pretendAumentar && data.equipamentosAdicionais && data.equipamentosAdicionais.length > 0) {
-      const consumoAdicional = data.equipamentosAdicionais.reduce((acc, eq) => 
-        acc + (eq.potenciaWatts * eq.horasUsoDia * 30 * eq.quantidade) / 1000, 0);
-      doc.text(`Expansão Planejada: +${consumoAdicional.toFixed(0)} kWh/mês`, pageWidth / 2, yPos + 20);
-    }
-
-    yPos += 35;
-
-    // ==================== RESUMO DO SISTEMA ====================
-    
-    doc.setFillColor(...colors.primary);
-    doc.rect(margin, yPos, pageWidth - 2 * margin, 10, 'F');
-    
-    doc.setTextColor(...colors.white);
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('DIMENSIONAMENTO DO SISTEMA', margin + 5, yPos + 7);
+    doc.text('- Equipamentos Utilizados:', margin, yPos);
 
-    yPos += 15;
+    yPos += 10;
 
-    // Cards de informação
-    const cardWidth = (pageWidth - 2 * margin - 10) / 2;
-    const cardHeight = 22;
-
-    // Card 1: Potência (usar potência real instalada)
+    // Calcular dados do sistema
     const potenciaInstalada = (calculation.quantidade_placas * calculation.placa_watts) / 1000;
-    doc.setFillColor(...colors.secondary);
-    doc.roundedRect(margin, yPos, cardWidth, cardHeight, 2, 2, 'F');
-    doc.setTextColor(...colors.dark);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Potência Instalada', margin + 5, yPos + 7);
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`${potenciaInstalada.toFixed(2)} kWp`, margin + 5, yPos + 16);
-
-    // Card 2: Placas
-    doc.setFillColor(...colors.secondary);
-    doc.roundedRect(margin + cardWidth + 5, yPos, cardWidth, cardHeight, 2, 2, 'F');
-    doc.setTextColor(...colors.dark);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Módulos Fotovoltaicos', margin + cardWidth + 10, yPos + 7);
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`${calculation.quantidade_placas}x ${calculation.placa_watts}W`, margin + cardWidth + 10, yPos + 16);
-
-    yPos += cardHeight + 5;
-
-    // Card 3: Investimento
-    doc.setFillColor(...colors.success);
-    doc.roundedRect(margin, yPos, cardWidth, cardHeight, 2, 2, 'F');
-    doc.setTextColor(...colors.white);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Investimento Total', margin + 5, yPos + 7);
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`R$ ${calculation.custo_estimado.toLocaleString('pt-BR')}`, margin + 5, yPos + 16);
-
-    // Card 4: Payback
-    doc.setFillColor(...colors.warning);
-    doc.roundedRect(margin + cardWidth + 5, yPos, cardWidth, cardHeight, 2, 2, 'F');
-    doc.setTextColor(...colors.white);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Retorno do Investimento', margin + cardWidth + 10, yPos + 7);
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`${calculation.payback_anos.toFixed(1)} anos`, margin + cardWidth + 10, yPos + 16);
-
-    yPos += cardHeight + 10;
-
-    // ==================== ESPECIFICAÇÕES TÉCNICAS ====================
+    const modeloModulo = `${calculation.placa_watts}W`;
     
-    doc.setFillColor(...colors.primary);
-    doc.rect(margin, yPos, pageWidth - 2 * margin, 10, 'F');
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...colors.text);
     
-    doc.setTextColor(...colors.white);
+    const equipamentos = [
+      `1- Inversor Solar ${calculation.inversor}`,
+      `2- ${calculation.quantidade_placas} módulos ${modeloModulo}`,
+      `3- STRING BOX (Proteção)`,
+      `4- Trilhos Suportes fixação em alumínio.`,
+      `5- Conectores e cabeamento necessário para o projeto.`
+    ];
+
+    equipamentos.forEach((item, index) => {
+      doc.text(item, margin, yPos + (index * 6));
+    });
+
+    yPos += equipamentos.length * 6 + 10;
+
+    // ==================== ITENS INCLUSOS NA PROPOSTA ====================
+    
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('ESPECIFICAÇÕES TÉCNICAS', margin + 5, yPos + 7);
+    doc.setTextColor(...colors.dark);
+    doc.text('- Itens inclusos na proposta:', margin, yPos);
 
-    yPos += 15;
+    yPos += 10;
 
-    // Calcular produção mensal real
-    const potenciaReal = (calculation.quantidade_placas * calculation.placa_watts) / 1000;
-    const producaoMensalReal = Math.round(potenciaReal * calculation.irradiacao_media * 30 * 0.80);
+    const itensInclusos = [
+      '1 - Dimensionamento do projeto de acordo com condições geográficas físicas e média de',
+      '    consumo do cliente',
+      '2 – Elaborações de todo projeto de engenharia elétrica',
+      '3 – Autorização e homologação junto à concessionária para conexão à rede',
+      '4 – Cabeamento elétrico fotovoltaico CC incluso na instalação entre módulos e inversores de',
+      '    frequência.',
+      '5 – String Box (Sistema de Proteção).',
+      '7 – Sistema de monitoramento via aplicativo'
+    ];
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...colors.text);
+
+    itensInclusos.forEach((item, index) => {
+      doc.text(item, margin, yPos + (index * 5));
+    });
+
+    yPos += itensInclusos.length * 5 + 10;
+
+    // ==================== ITENS NÃO INCLUSOS ====================
     
-    // Tabela de especificações
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...colors.dark);
+    doc.text('- Itens não inclusos na proposta:', margin, yPos);
+
+    yPos += 10;
+
+    const itensNaoInclusos = [
+      '1 – Reforço em estruturas de telhado e adaptações afins',
+      '2 – Adequações do padrão de entrada do cliente',
+      '3 – Adequações em sistema de medidor'
+    ];
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...colors.text);
+
+    itensNaoInclusos.forEach((item, index) => {
+      doc.text(item, margin, yPos + (index * 6));
+    });
+
+    yPos += itensNaoInclusos.length * 6 + 10;
+
+    // ==================== PRAZO DE EXECUÇÃO ====================
+    
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...colors.dark);
+    doc.text('- Prazo de execução do serviço:', margin, yPos);
+
+    yPos += 10;
+
+    const textoPrazo = doc.splitTextToSize(
+      'O prazo de entrega dos serviços leva em consideração a elaboração e o tempo para aprovação do cliente sendo 30 dias. A aprovação do projeto, inspeção e liberação da concessionária mais 30 dias, levando todas as obrigações em consideração o prazo médio para liberação de uso e geração de energia é de até 60 dias. (média de homologação 40 dias).',
+      pageWidth - 2 * margin
+    );
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...colors.text);
+    doc.text(textoPrazo, margin, yPos);
+
+    yPos += textoPrazo.length * 5 + 10;
+
+    // ==================== GARANTIAS ====================
+    
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...colors.dark);
+    doc.text('- Garantias:', margin, yPos);
+
+    yPos += 10;
+
+    const garantias = [
+      '1 – Instalação 3 anos',
+      '2 – Placas 25 anos 80% Eficiência – 12 anos fábrica',
+      '3 – Inversores 10 anos',
+      '4 – String Box 5 anos',
+      '5 – Estrutura em alumínio 25 anos'
+    ];
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...colors.text);
+
+    garantias.forEach((item, index) => {
+      doc.text(item, margin, yPos + (index * 6));
+    });
+
+    yPos += garantias.length * 6 + 10;
+
+    // ==================== PAGAMENTOS ====================
+    
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...colors.dark);
+    doc.text('- Pagamentos:', margin, yPos);
+
+    yPos += 10;
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...colors.text);
+    doc.text('1 – Valor a vista via financiamento pelo cliente.', margin, yPos);
+
+    yPos += 20;
+
+    // ==================== NOVA PÁGINA - PROPOSTA DO SISTEMA ====================
+    
+    doc.addPage();
+    yPos = margin;
+
+    // Cabeçalho da segunda página
+    doc.setFillColor(...colors.primary);
+    doc.rect(0, 0, pageWidth, 25, 'F');
+    
+    doc.setTextColor(...colors.white);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ALFA SOLAR - PROPOSTA TÉCNICA', pageWidth / 2, 16, { align: 'center' });
+
+    yPos = 35;
+
+    // ==================== PROPOSTA DO SISTEMA FOTOVOLTAICO ====================
+    
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...colors.dark);
+    doc.text('- Proposta do sistema fotovoltaico:', margin, yPos);
+
+    yPos += 10;
+
+    // Calcular produção mensal
+    const producaoMensalReal = Math.round(potenciaInstalada * calculation.irradiacao_media * 30 * 0.80);
+    
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...colors.text);
+    
+    const textoProposta = `A proposta oferece geração de ${producaoMensalReal} kwh/mês de média anual, potência do projeto de ${potenciaInstalada.toFixed(2)} kwp.`;
+    doc.text(textoProposta, margin, yPos);
+
+    yPos += 10;
+
+    doc.text('Segue abaixo tabelas com detalhamento do dimensionamento, e custos do', margin, yPos);
+    doc.text('investimento.', margin, yPos + 6);
+
+    yPos += 20;
+
+    // ==================== TABELAS TÉCNICAS ====================
+
+    // Tabela 1: Dados do módulo fotovoltaico
     autoTable(doc, {
       startY: yPos,
-      head: [['Item', 'Especificação']],
+      head: [['Dados do módulo fotovoltaico em STC', '']],
       body: [
-        ['Potência Mínima Calculada', `${calculation.potencia_kwp.toFixed(2)} kWp`],
-        ['Potência Instalada', `${potenciaReal.toFixed(2)} kWp`],
-        ['Módulos Fotovoltaicos', `${calculation.quantidade_placas} unidades de ${calculation.placa_watts}W`],
-        ['Inversor', calculation.inversor],
-        ['Irradiação Solar Média (HSP)', `${calculation.irradiacao_media.toFixed(2)} kWh/m²/dia`],
-        ['Produção Mensal Estimada', `${producaoMensalReal} kWh/mês`],
-        ['Consumo Total', `${calculation.consumo_total_kwh.toFixed(0)} kWh/mês`],
-        ['Eficiência do Sistema', '80% (considerando perdas)'],
+        ['Modelo:', `${modeloModulo}`],
+        ['Potência de pico:', `${calculation.placa_watts} Wp`],
+        ['Eficiência informada no catálogo:', '22,8 %']
       ],
       theme: 'grid',
       headStyles: {
@@ -191,122 +272,133 @@ export async function POST(request: NextRequest) {
         textColor: colors.white,
         fontSize: 11,
         fontStyle: 'bold',
-        halign: 'left'
+        halign: 'center'
       },
       bodyStyles: {
         fontSize: 10,
         textColor: colors.dark
       },
-      alternateRowStyles: {
-        fillColor: colors.light
+      columnStyles: {
+        0: { cellWidth: 120, fontStyle: 'bold' },
+        1: { cellWidth: 60, halign: 'center' }
       },
       margin: { left: margin, right: margin }
     });
 
     yPos = (doc as any).lastAutoTable.finalY + 10;
 
-    // ==================== ANÁLISE TÉCNICA ====================
-    
-    // Verificar se precisa de nova página
-    if (yPos > pageHeight - 80) {
-      doc.addPage();
-      yPos = margin;
-    }
+    // Tabela 2: Dados da localidade
+    autoTable(doc, {
+      startY: yPos,
+      head: [['Dados da localidade', '']],
+      body: [
+        ['Cidade:', `${data.cidade.toUpperCase()}`],
+        ['Energia diária fator radiação(média anual):', `${(calculation.irradiacao_media * 1000).toFixed(0)} Wh/m2/dia`]
+      ],
+      theme: 'grid',
+      headStyles: {
+        fillColor: colors.primary,
+        textColor: colors.white,
+        fontSize: 11,
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      bodyStyles: {
+        fontSize: 10,
+        textColor: colors.dark
+      },
+      columnStyles: {
+        0: { cellWidth: 120, fontStyle: 'bold' },
+        1: { cellWidth: 60, halign: 'center' }
+      },
+      margin: { left: margin, right: margin }
+    });
 
-    doc.setFillColor(...colors.primary);
-    doc.rect(margin, yPos, pageWidth - 2 * margin, 10, 'F');
+    yPos = (doc as any).lastAutoTable.finalY + 10;
+
+    // Tabela 3: Dados do inversor
+    const inversorModelo = calculation.inversor.split(' ')[0] || 'SAJ';
+    const inversorPotencia = Math.round(potenciaInstalada * 1000);
+    
+    autoTable(doc, {
+      startY: yPos,
+      head: [['Dados do inversor', '']],
+      body: [
+        ['Modelo:', inversorModelo],
+        ['Potência nominal', `${inversorPotencia} W`],
+        ['Eficiência:', '98,5 %']
+      ],
+      theme: 'grid',
+      headStyles: {
+        fillColor: colors.primary,
+        textColor: colors.white,
+        fontSize: 11,
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      bodyStyles: {
+        fontSize: 10,
+        textColor: colors.dark
+      },
+      columnStyles: {
+        0: { cellWidth: 120, fontStyle: 'bold' },
+        1: { cellWidth: 60, halign: 'center' }
+      },
+      margin: { left: margin, right: margin }
+    });
+
+    yPos = (doc as any).lastAutoTable.finalY + 10;
+
+    // Tabela 4: Dimensionamento
+    const energiaPorModulo = Math.round((calculation.placa_watts * calculation.irradiacao_media * 0.80) / 1000 * 30);
+    const areaModulos = calculation.quantidade_placas * 2.5; // ~2.5m² por módulo
+    const potenciaPicoModulos = calculation.quantidade_placas * calculation.placa_watts;
+    
+    autoTable(doc, {
+      startY: yPos,
+      head: [['Dimensionamento', '']],
+      body: [
+        ['Energia mensal desejada', `${data.consumoMedioMensal} kWh`],
+        ['Energia produzida por módulo', `${energiaPorModulo} kWh`],
+        ['Número de módulos', `${calculation.quantidade_placas}`],
+        ['Área dos módulos', `${areaModulos.toFixed(0)} m2`],
+        ['Potência de pico dos módulos', `${potenciaPicoModulos} Wp`],
+        ['Número de inversores', '1']
+      ],
+      theme: 'grid',
+      headStyles: {
+        fillColor: colors.primary,
+        textColor: colors.white,
+        fontSize: 11,
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      bodyStyles: {
+        fontSize: 10,
+        textColor: colors.dark
+      },
+      columnStyles: {
+        0: { cellWidth: 120, fontStyle: 'bold' },
+        1: { cellWidth: 60, halign: 'center' }
+      },
+      margin: { left: margin, right: margin }
+    });
+
+    yPos = (doc as any).lastAutoTable.finalY + 20;
+
+    // ==================== VALOR DO INVESTIMENTO ====================
+    
+    // Caixa verde com o valor
+    doc.setFillColor(...colors.success);
+    doc.roundedRect(margin, yPos, 100, 15, 3, 3, 'F');
     
     doc.setTextColor(...colors.white);
-    doc.setFontSize(14);
+    doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
-    doc.text('ANÁLISE TÉCNICA', margin + 5, yPos + 7);
-
-    yPos += 15;
-
-    // Adicionar nota sobre dimensionamento
-    doc.setFillColor(...colors.light);
-    doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 18, 2, 2, 'F');
+    doc.text('Valor do investimento:', margin + 5, yPos + 6);
     
-    doc.setTextColor(...colors.dark);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    doc.text('💡 Sobre o Dimensionamento:', margin + 5, yPos + 6);
-    
-    doc.setFont('helvetica', 'normal');
-    const notaDimensionamento = doc.splitTextToSize(
-      `O sistema foi dimensionado para produzir ligeiramente acima do consumo atual. Isso compensa perdas sazonais (dias nublados, chuva) e garante a compensação integral do consumo ao longo do ano. O excedente gera créditos de energia válidos por 60 meses.`,
-      pageWidth - 2 * margin - 10
-    );
-    doc.text(notaDimensionamento, margin + 5, yPos + 11);
-    
-    yPos += 23;
-
-    // Texto da explicação com quebra de linha
-    doc.setTextColor(...colors.dark);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    
-    const explicacaoLines = doc.splitTextToSize(
-      calculation.explicacao, 
-      pageWidth - 2 * margin - 10
-    );
-    
-    doc.text(explicacaoLines, margin + 5, yPos);
-    yPos += explicacaoLines.length * 4 + 10;
-
-    // ==================== EQUIPAMENTOS ADICIONAIS ====================
-    
-    if (data.pretendAumentar && data.equipamentosAdicionais && data.equipamentosAdicionais.length > 0) {
-      // Verificar se precisa de nova página
-      if (yPos > pageHeight - 60) {
-        doc.addPage();
-        yPos = margin;
-      }
-
-      doc.setFillColor(...colors.primary);
-      doc.rect(margin, yPos, pageWidth - 2 * margin, 10, 'F');
-      
-      doc.setTextColor(...colors.white);
-      doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
-      doc.text('EQUIPAMENTOS PLANEJADOS', margin + 5, yPos + 7);
-
-      yPos += 15;
-
-      const equipamentosData = data.equipamentosAdicionais.map(eq => {
-        const consumoMensal = (eq.potenciaWatts * eq.horasUsoDia * 30 * eq.quantidade) / 1000;
-        return [
-          eq.nome,
-          `${eq.potenciaWatts}W`,
-          eq.quantidade.toString(),
-          `${eq.horasUsoDia}h/dia`,
-          `${consumoMensal.toFixed(0)} kWh/mês`
-        ];
-      });
-
-      autoTable(doc, {
-        startY: yPos,
-        head: [['Equipamento', 'Potência', 'Qtd', 'Uso Diário', 'Consumo Mensal']],
-        body: equipamentosData,
-        theme: 'grid',
-        headStyles: {
-          fillColor: colors.primary,
-          textColor: colors.white,
-          fontSize: 10,
-          fontStyle: 'bold'
-        },
-        bodyStyles: {
-          fontSize: 9,
-          textColor: colors.dark
-        },
-        alternateRowStyles: {
-          fillColor: colors.light
-        },
-        margin: { left: margin, right: margin }
-      });
-
-      yPos = (doc as any).lastAutoTable.finalY + 10;
-    }
+    doc.setFontSize(18);
+    doc.text(`R$ ${calculation.custo_estimado.toLocaleString('pt-BR')}`, margin + 5, yPos + 12);
 
     // ==================== RODAPÉ ====================
     
@@ -314,27 +406,21 @@ export async function POST(request: NextRequest) {
       const footerY = pageHeight - 25;
       
       // Linha decorativa
-      doc.setDrawColor(...colors.secondary);
-      doc.setLineWidth(0.5);
+      doc.setDrawColor(...colors.primary);
+      doc.setLineWidth(1);
       doc.line(margin, footerY, pageWidth - margin, footerY);
       
       // Informações da empresa
-      doc.setTextColor(...colors.accent);
-      doc.setFontSize(8);
-      doc.setFont('helvetica', 'normal');
-      doc.text('Alfa Solar - Energia Renovável', margin, footerY + 5);
-      doc.text('Presidente Prudente/SP', margin, footerY + 9);
-      doc.text(`Página ${pageNum}`, pageWidth - margin, footerY + 7, { align: 'right' });
-      
-      // Powered by
-      doc.setFontSize(7);
-      doc.setTextColor(...colors.accent);
-      doc.text('Powered by Groq AI • Cálculos precisos baseados em dados reais', pageWidth / 2, footerY + 13, { align: 'center' });
-      
-      // Copyright
-      doc.setFontSize(7);
+      doc.setTextColor(...colors.text);
+      doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
-      doc.text('© 2026 Alfa Esquadrias - Todos os direitos reservados', pageWidth / 2, footerY + 17, { align: 'center' });
+      doc.text('ALFA SOLAR - Energia Solar Fotovoltaica', margin, footerY + 6);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Av. Joaquim Constantino, 1880 - Vila Nova Prudente - Presidente Prudente/SP', margin, footerY + 11);
+      doc.text('CEP: 19050-220 | (18) 99697-6413 | atendimentoalfasolar@gmail.com', margin, footerY + 16);
+      
+      // Página
+      doc.text(`Página ${pageNum}`, pageWidth - margin, footerY + 11, { align: 'right' });
     };
 
     // Adicionar rodapé em todas as páginas
@@ -350,7 +436,7 @@ export async function POST(request: NextRequest) {
     return new NextResponse(pdfBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="Proposta-Alfa-Solar-${Date.now()}.pdf"`,
+        'Content-Disposition': `attachment; filename="Orcamento-Alfa-Solar-${Date.now()}.pdf"`,
       },
     });
   } catch (error) {

@@ -46,15 +46,19 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Verificar se há usuário de desenvolvimento no localStorage (via cookie)
+  const devUser = request.cookies.get('alfa_solar_dev_user');
+  const hasDevUser = devUser && devUser.value;
+
   // Proteger rotas que precisam de autenticação
-  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
+  if (!user && !hasDevUser && request.nextUrl.pathname.startsWith('/dashboard')) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
   // Redirecionar usuários logados da página de login
-  if (user && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register')) {
+  if ((user || hasDevUser) && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register')) {
     const url = request.nextUrl.clone();
     url.pathname = '/dashboard';
     return NextResponse.redirect(url);
